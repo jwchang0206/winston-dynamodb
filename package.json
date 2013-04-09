@@ -1,7 +1,7 @@
 {
   "name": "winston-dynamodb",
   "description": "A Winston transport for Amazon DynamoDB",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name":"JeongWoo Chang",
     "email":"inspired.jw@gmail.com"
