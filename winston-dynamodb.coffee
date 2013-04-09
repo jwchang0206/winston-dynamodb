@@ -3,6 +3,7 @@ util = require "util"
 AWS = require "aws-sdk"
 uuidV4 = require("node-uuid").v4
 _ = require "lodash"
+hostname = require("os").hostname()
 
 # Return timestamp with YYYY-MM-DD HH:mm:ss
 datify = (timestamp) ->
@@ -76,6 +77,8 @@ DynamoDB::log = (level, msg, meta, callback) ->
 				"S": datify Date.now()
 			msg:
 				"S": msg
+			hostname:
+				"S": hostname
 
 	params.Item.meta = "S": JSON.stringify meta if meta?
 	
