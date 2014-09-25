@@ -13,8 +13,8 @@
   },
   "keywords": ["logging", "sysadmin", "tools", "winston", "amazon", "dynamodb", "aws"],
   "dependencies": {
-    "aws-sdk": "*",
-    "node-uuid": "1.4.0",
+    "aws-sdk": "2.*",
+    "node-uuid": "1.4.*",
     "lodash": "1.0.0"
   },
   "devDependencies": {
