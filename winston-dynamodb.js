@@ -99,7 +99,7 @@
         "S": JSON.stringify(meta)
       };
     }
-    this.db.client.putItem(params, function(err, data) {
+    this.db.putItem(params, function(err, data) {
       if (err) {
         return _this.emit("error", err);
       } else {
