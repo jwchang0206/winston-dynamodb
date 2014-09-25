@@ -82,7 +82,7 @@ DynamoDB::log = (level, msg, meta, callback) ->
 
 	params.Item.meta = "S": JSON.stringify meta if meta?
 	
-	@.db.client.putItem params, (err, data) =>
+	@.db.putItem params, (err, data) =>
 		if err
 			@.emit "error", err
 
