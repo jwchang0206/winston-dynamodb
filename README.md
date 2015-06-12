@@ -17,6 +17,7 @@ A DynamoDB transport for [winston][0].
 accessKeyId     : your AWS access key id
 secretAccessKey : your AWS secret access key
 region          : the region where the domain is hosted
+useEnvironment  : use process.env values for AWS access, secret, & region
 tableName       : DynamoDB table name
 ```
 
@@ -24,10 +25,29 @@ tableName       : DynamoDB table name
 
 Make a table with `tableName`
 
+The table schema depends on how you intend to use it.
+
+#### Simplest
+
 The table should have
 
 - hash key: (String) level
 - range key: (String) timestamp
+
+> Note: Timestamp has a millisecond resolution. So whether this key setup will work depends on how many log messages you expect.
+>
+> That is, the uniqueness of level + timestamp means max: 1 log message of a given level per millisecond.
+
+It is nice to have it as a range key for queries.
+
+#### More Robust
+
+To ensure you can log as many messages as you like, alternatively use:
+
+- hash key: (String) id <small>(Will be a uuid)</small>
+- range key: (String) timestamp
+
+Using the id as hash ensures that all log items will have unique keys and be included.
 
 ## Region
 
@@ -46,6 +66,9 @@ Available Regions
 
 All of these options are values that you can find from your Amazon Web Services account: 'accessKeyId', 'secretAccessKey' and 'awsAccountId'.
 
+Alternatively, pass in useEnvironment: true and the process.env values will be used.
+> (Functions in AWS Lambda environment and works with default AWS Credentials Global Configuration .config in other node environments.)  
+
 ## Installation
 
 ``` bash
@@ -55,4 +78,4 @@ All of these options are values that you can find from your Amazon Web Services 
 
 #### Author: [JeongWoo Chang](http://twitter.com/inspiredjw)
 
-[0]: https://github.com/flatiron/winston
+[0]: https://github.com/winstonjs/winston
