@@ -22,8 +22,8 @@
   ],
   "dependencies": {
     "aws-sdk": "^2.1.32",
-    "node-uuid": "1.4.*",
-    "lodash": "^3.9.3"
+    "lodash": "^4.12.0",
+    "node-uuid": "1.4.*"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

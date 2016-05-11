@@ -6,3 +6,4 @@ node_modules
 *.tmproj
 *.sublime-project
 dump.rdb
+.idea
