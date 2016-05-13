@@ -66,42 +66,60 @@ DynamoDB = exports.DynamoDB = (options = {}) ->
 
 	# DynamoDB Options=
 	@.db = new AWS.DynamoDB()
+	@.AWS = AWS
 	@.region = options.region
 	
 	# a-z, A-Z, 0-9, _ (underscore), - (hyphen) and . (period)
 	@.tableName = options.tableName
+	@.dynamoDoc = options.dynamoDoc
 
 util.inherits DynamoDB, winston.Transport
 
 DynamoDB::log = (level, msg, meta, callback) ->
-	# DynamoDB Options
-	params =
-		TableName: @.tableName
-		Item:
-			id:
-				"S": uuid.v4()
-			level:
-				"S": level
-			timestamp:
-				"S": datify Date.now()
-			msg:
-				"S": msg
-			hostname:
-				"S": hostname
-
-	unless _.isEmpty meta
-		params.Item.meta = "S": JSON.stringify meta if meta?
-	
-	@.db.putItem params, (err, data) =>
+	putCallback = (err, data) =>
 		if err
 			@.emit "error", err
 			callback err, null if callback
-
 		else
 			@.emit "logged"
 			callback null, "logged" if callback
-		
-		return	
+
+	if @.dynamoDoc == true
+		params =
+			TableName: @.tableName
+			Item:
+				id: uuid.v4()
+				level: level
+				timestamp: datify Date.now()
+				msg: msg
+				hostname: hostname
+
+		unless _.isEmpty meta
+			params.Item.meta = meta
+
+		dynamoDocClient = new @.AWS.DynamoDB.DocumentClient({
+			service: @.db
+		})
+		dynamoDocClient.put params, putCallback
+	else
+		params =
+			TableName: @.tableName
+			Item:
+				id:
+					"S": uuid.v4()
+				level:
+					"S": level
+				timestamp:
+					"S": datify Date.now()
+				msg:
+					"S": msg
+				hostname:
+					"S": hostname
+
+		unless _.isEmpty meta
+			params.Item.meta = "S": JSON.stringify meta
+
+		@.db.putItem params, putCallback
 
 # Add DynamoDB to the transports by winston
 winston.transports.DynamoDB = DynamoDB

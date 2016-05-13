@@ -72,56 +72,77 @@
     this.name = "dynamodb";
     this.level = options.level || "info";
     this.db = new AWS.DynamoDB();
+    this.AWS = AWS;
     this.region = options.region;
-    return this.tableName = options.tableName;
+    this.tableName = options.tableName;
+    return this.dynamoDoc = options.dynamoDoc;
   };
 
   util.inherits(DynamoDB, winston.Transport);
 
   DynamoDB.prototype.log = function(level, msg, meta, callback) {
-    var params;
-    params = {
-      TableName: this.tableName,
-      Item: {
-        id: {
-          "S": uuid.v4()
-        },
-        level: {
-          "S": level
-        },
-        timestamp: {
-          "S": datify(Date.now())
-        },
-        msg: {
-          "S": msg
-        },
-        hostname: {
-          "S": hostname
-        }
-      }
-    };
-    if (!_.isEmpty(meta)) {
-      if (meta != null) {
-        params.Item.meta = {
-          "S": JSON.stringify(meta)
-        };
-      }
-    }
-    return this.db.putItem(params, (function(_this) {
+    var dynamoDocClient, params, putCallback;
+    putCallback = (function(_this) {
       return function(err, data) {
         if (err) {
           _this.emit("error", err);
           if (callback) {
-            callback(err, null);
+            return callback(err, null);
           }
         } else {
           _this.emit("logged");
           if (callback) {
-            callback(null, "logged");
+            return callback(null, "logged");
           }
         }
       };
-    })(this));
+    })(this);
+    if (this.dynamoDoc === true) {
+      params = {
+        TableName: this.tableName,
+        Item: {
+          id: uuid.v4(),
+          level: level,
+          timestamp: datify(Date.now()),
+          msg: msg,
+          hostname: hostname
+        }
+      };
+      if (!_.isEmpty(meta)) {
+        params.Item.meta = meta;
+      }
+      dynamoDocClient = new this.AWS.DynamoDB.DocumentClient({
+        service: this.db
+      });
+      return dynamoDocClient.put(params, putCallback);
+    } else {
+      params = {
+        TableName: this.tableName,
+        Item: {
+          id: {
+            "S": uuid.v4()
+          },
+          level: {
+            "S": level
+          },
+          timestamp: {
+            "S": datify(Date.now())
+          },
+          msg: {
+            "S": msg
+          },
+          hostname: {
+            "S": hostname
+          }
+        }
+      };
+      if (!_.isEmpty(meta)) {
+        params.Item.meta = {
+          "S": JSON.stringify(meta)
+        };
+      }
+      return this.db.putItem(params, putCallback);
+    }
   };
 
   winston.transports.DynamoDB = DynamoDB;
