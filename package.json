@@ -1,7 +1,7 @@
 {
   "name": "winston-dynamodb",
   "description": "A Winston transport for Amazon DynamoDB",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": {
     "name": "JeongWoo Chang",
     "email": "inspired.jw@gmail.com"
@@ -31,8 +31,5 @@
     "gulp-util": "^3.0.5",
     "winston": "^1.0.0"
   },
-  "main": "./winston-dynamodb",
-  "engines": {
-    "node": ">= 0.8.0"
-  }
+  "main": "./winston-dynamodb"
 }
