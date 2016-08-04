@@ -1,0 +1,11 @@
+{
+  "globalDependencies": {
+    "aws-sdk": "registry:dt/aws-sdk#0.0.0+20160802165139",
+    "lodash": "registry:dt/lodash#4.14.0+20160802150749",
+    "node": "registry:env/node#6.0.0+20160723033700",
+    "winston": "registry:dt/winston#0.0.0+20160417152829"
+  },
+  "dependencies": {
+    "node-uuid": "registry:npm/node-uuid#1.4.7+20160723033700"
+  }
+}
