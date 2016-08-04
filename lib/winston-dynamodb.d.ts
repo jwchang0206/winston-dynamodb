@@ -1,5 +1,4 @@
 import * as winston from 'winston';
-import * as AWS from 'aws-sdk';
 export interface DynamoDBTransportOptions {
     useEnvironment?: boolean;
     accessKeyId?: string;
@@ -7,7 +6,7 @@ export interface DynamoDBTransportOptions {
     region?: string;
     tableName: string;
     level: string;
-    dynamoDoc: AWS.DynamoDB.DocumentClient;
+    dynamoDoc?: boolean;
 }
 export interface DynamoDBTransportInstance extends winston.TransportInstance {
     new (options?: DynamoDBTransportOptions): DynamoDBTransportInstance;

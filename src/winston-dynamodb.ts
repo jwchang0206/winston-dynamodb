@@ -37,7 +37,7 @@ export interface DynamoDBTransportOptions {
   region?: string;
   tableName: string;
   level: string;
-  dynamoDoc: AWS.DynamoDB.DocumentClient
+  dynamoDoc?: boolean;
 }
 
 export interface DynamoDBTransportInstance extends winston.TransportInstance {
