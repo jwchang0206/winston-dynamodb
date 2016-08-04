@@ -30,7 +30,21 @@ function datify(timestamp) {
   return `${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}.${date.millisecond}`;
 }
 
-export class DynamoDB {
+export interface DynamoDBTransportOptions {
+  useEnvironment?: boolean;
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  region?: string;
+  tableName: string;
+  level: string;
+  dynamoDoc: AWS.DynamoDB.DocumentClient
+}
+
+export interface DynamoDBTransportInstance extends winston.TransportInstance {
+  new (options?: DynamoDBTransportOptions): DynamoDBTransportInstance;
+}
+
+export class DynamoDB extends winston.Transport {
   regions: string[];
   name: string;
   level: string;
@@ -40,9 +54,10 @@ export class DynamoDB {
   tableName: string;
   dynamoDoc;  // Type?
   
-  constructor(options) {
+  new (options?: DynamoDBTransportOptions): DynamoDBTransportInstance {
+
     if (options == null) {
-      options = {};
+      options = <DynamoDBTransportOptions>{};
     }
     this.regions = ["us-east-1", "us-west-1", "us-west-2", "eu-west-1", "eu-central-1", "ap-northeast-1", "ap-northeast-2", "ap-southeast-1", "ap-southeast-2", "sa-east-1"];
     if (options.useEnvironment) {
