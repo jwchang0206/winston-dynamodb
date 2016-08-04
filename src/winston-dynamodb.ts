@@ -5,6 +5,9 @@ import * as uuid from 'node-uuid';
 import * as _ from 'lodash';
 import * as os from 'os';
 
+import { Transport } from 'winston';
+import { TransportInstance } from 'winston';
+
 const hostname = os.hostname();
 
 function datify(timestamp) {
@@ -30,7 +33,21 @@ function datify(timestamp) {
   return `${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}.${date.millisecond}`;
 }
 
-export class DynamoDB {
+export interface DynamoDBTransportOptions {
+  useEnvironment?: boolean;
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  region?: string;
+  tableName: string;
+  level: string;
+  dynamoDoc?: boolean;
+}
+
+export interface DynamoDBTransportInstance extends TransportInstance {
+  new (options?: DynamoDBTransportOptions): DynamoDBTransportInstance;
+}
+
+export class DynamoDB extends winston.Transport implements DynamoDBTransportInstance {
   regions: string[];
   name: string;
   level: string;
@@ -38,11 +55,13 @@ export class DynamoDB {
   AWS;  // Type?
   region: string;
   tableName: string;
-  dynamoDoc;  // Type?
+  dynamoDoc: boolean;
   
-  constructor(options) {
+  constructor(options?: DynamoDBTransportOptions) {
+    super(options);
+
     if (options == null) {
-      options = {};
+      options = <DynamoDBTransportOptions>{};
     }
     this.regions = ["us-east-1", "us-west-1", "us-west-2", "eu-west-1", "eu-central-1", "ap-northeast-1", "ap-northeast-2", "ap-southeast-1", "ap-southeast-2", "sa-east-1"];
     if (options.useEnvironment) {
@@ -79,7 +98,6 @@ export class DynamoDB {
     this.region = options.region;
     this.tableName = options.tableName;
     this.dynamoDoc = options.dynamoDoc;
-    return this.dynamoDoc;
   }
 
   log(level, msg, meta, callback) {
@@ -150,6 +168,9 @@ export class DynamoDB {
 
 }
 
-util.inherits(DynamoDB, winston.Transport);
-
-winston.transports['DynamoDB'] = DynamoDB;
+import { Transports } from 'winston';
+declare module "winston" {
+  export interface Transports {
+    DynamoDB: DynamoDB;
+  }
+}
