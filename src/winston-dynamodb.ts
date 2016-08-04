@@ -152,4 +152,9 @@ export class DynamoDB {
 
 util.inherits(DynamoDB, winston.Transport);
 
-winston.transports['DynamoDB'] = DynamoDB;
+import { Transports } from 'winston';
+declare module "winston" {
+  export interface Transports {
+    DynamoDB: DynamoDB;
+  }
+}
