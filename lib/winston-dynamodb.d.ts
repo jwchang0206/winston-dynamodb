@@ -11,7 +11,7 @@ export interface DynamoDBTransportOptions {
 export interface DynamoDBTransportInstance extends winston.TransportInstance {
     new (options?: DynamoDBTransportOptions): DynamoDBTransportInstance;
 }
-export declare class DynamoDB extends winston.Transport {
+export declare class DynamoDB extends winston.Transport implements winston.TransportInstance {
     regions: string[];
     name: string;
     level: string;
@@ -20,7 +20,7 @@ export declare class DynamoDB extends winston.Transport {
     region: string;
     tableName: string;
     dynamoDoc: any;
-    new(options?: DynamoDBTransportOptions): DynamoDBTransportInstance;
+    constructor(options?: DynamoDBTransportOptions);
     log(level: any, msg: any, meta: any, callback: any): any;
 }
 declare module "winston" {

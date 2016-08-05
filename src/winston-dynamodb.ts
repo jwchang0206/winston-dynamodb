@@ -5,6 +5,9 @@ import * as uuid from 'node-uuid';
 import * as _ from 'lodash';
 import * as os from 'os';
 
+import { Transport } from 'winston';
+import { TransportInstance } from 'winston';
+
 const hostname = os.hostname();
 
 function datify(timestamp) {
@@ -40,11 +43,11 @@ export interface DynamoDBTransportOptions {
   dynamoDoc?: boolean;
 }
 
-export interface DynamoDBTransportInstance extends winston.TransportInstance {
+export interface DynamoDBTransportInstance extends TransportInstance {
   new (options?: DynamoDBTransportOptions): DynamoDBTransportInstance;
 }
 
-export class DynamoDB extends winston.Transport {
+export class DynamoDB extends Transport implements DynamoDBTransportInstance {
   regions: string[];
   name: string;
   level: string;
@@ -54,7 +57,8 @@ export class DynamoDB extends winston.Transport {
   tableName: string;
   dynamoDoc;  // Type?
   
-  new (options?: DynamoDBTransportOptions): DynamoDBTransportInstance {
+  constructor(options?: DynamoDBTransportOptions) {
+    super(options);
 
     if (options == null) {
       options = <DynamoDBTransportOptions>{};
@@ -164,8 +168,6 @@ export class DynamoDB extends winston.Transport {
   }
 
 }
-
-util.inherits(DynamoDB, winston.Transport);
 
 import { Transports } from 'winston';
 declare module "winston" {
