@@ -41,7 +41,7 @@
     if (options == null) {
       options = {};
     }
-    regions = ["us-east-1", "us-west-1", "us-west-2", "eu-west-1", "eu-central-1", "ap-northeast-1", "ap-northeast-2", "ap-southeast-1", "ap-southeast-2", "sa-east-1"];
+    regions = ["localhost", "us-east-1", "us-west-1", "us-west-2", "eu-west-1", "eu-central-1", "ap-northeast-1", "ap-northeast-2", "ap-southeast-1", "ap-southeast-2", "sa-east-1"];
     if (options.useEnvironment) {
       options.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
       options.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
@@ -71,7 +71,14 @@
     }
     this.name = "dynamodb";
     this.level = options.level || "info";
-    this.db = new AWS.DynamoDB();
+    if (options.region == "localhost") {
+      this.db = new AWS.DynamoDB({
+        endpoint: new AWS.Endpoint(options.endpoint)
+      });
+    }
+    else {
+      this.db = new AWS.DynamoDB();
+    }
     this.AWS = AWS;
     this.region = options.region;
     this.tableName = options.tableName;
