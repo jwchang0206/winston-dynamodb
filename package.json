@@ -11,6 +11,7 @@
     "type": "git",
     "url": "git://github.com/inspiredjw/winston-dynamodb.git"
   },
+  "typings": "./lib/winston-dynamodb.d.ts",
   "keywords": [
     "logging",
     "sysadmin",
